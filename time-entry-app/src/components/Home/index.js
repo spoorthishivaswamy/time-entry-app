@@ -44,7 +44,7 @@ class MessagesBase extends Component {
       text: this.state.text,
       taskName: this.state.taskName,
       time: this.state.time,
-      userId: authUser.email,
+      userId: authUser.uid,
     });
 
     this.setState({ text: '' });
@@ -103,10 +103,10 @@ class MessagesBase extends Component {
               <label>
                 Pick your project:
               <select value={text} onChange={this.onChangeText}>
-                  <option value="P1">Project 1</option>
-                  <option value="P2">Project 2</option>
-                  <option value="P3">Project 3</option>
-                  <option value="P4">Project 4</option>
+                  <option value="Project 1">Project 1</option>
+                  <option value="Project 2">Project 2</option>
+                  <option value="Project 3">Project 3</option>
+                  <option value="Project 4">Project 4</option>
                 </select>
               </label>
               <Timer callbackFromParent={this.timerCallback} />
@@ -115,7 +115,7 @@ class MessagesBase extends Component {
             <hr />
             {loading && <div>Loading ...</div>}
 
-            {messages && this.bool(messages, authUser) ? (
+            {messages ? (
               <MessageList authUser={authUser.uid} messages={messages} onRemoveMessage={this.onRemoveMessage} />
             ) : (
                 <div><h2>The list is Empty ...</h2></div>
