@@ -6,9 +6,10 @@ import { withFirebase } from '../Firebase';
 import Timer from '../Timer';
 import ms from 'pretty-ms'
 
+
 const HomePage = () => (
   <div>
-    <h1>Time Entry App</h1>
+    <h1 style={{ color: "red" }}>Time Entry App</h1>
 
     <Messages />
   </div>
@@ -20,31 +21,36 @@ class MessagesBase extends Component {
 
     this.state = {
       text: '',
+      taskName: '',
       loading: false,
       messages: [],
-      time:null
+      time: null
     };
   }
-  timerCallback = (data)=> {
+  timerCallback = (data) => {
     console.log(data)
-    this.setState({time:data})
+    this.setState({ time: data })
   }
   onChangeText = event => {
     this.setState({ text: event.target.value });
   };
+  onChangeTaskName = event => {
+    this.setState({ taskName: event.target.value });
+  }
   onRemoveMessage = uid => {
     this.props.firebase.message(uid).remove();
   };
   onCreateMessage = (event, authUser) => {
-    console.log("uid--",authUser.uid)
+    console.log("uid--", authUser.uid)
     this.props.firebase.messages().push({
       text: this.state.text,
+      taskName: this.state.taskName,
       time: this.state.time,
-      userId: authUser.uid,
+      userId: authUser.email,
     });
 
     this.setState({ text: '' });
-
+    this.setState({ taskName: '' })
     event.preventDefault();
   };
 
@@ -72,15 +78,33 @@ class MessagesBase extends Component {
     this.props.firebase.messages().off();
   }
 
+  bool = (messages, authUser) => {
+    var flag = false;
+    messages.map(message => {
+      // console.log("message.userId ", message.userId )
+      // console.log("authUser.email", authUser.email)
+      if (message.userId === authUser.email){
+        console.log("authUser.email", authUser.email)
+        flag=true;
+      }
+    })
+    return flag
+  };
+
   render() {
-    const { text, time, messages, loading } = this.state;
+    const { text, taskName, messages, loading } = this.state;
+
 
     return (
       <AuthUserContext.Consumer>
         {authUser => (
-          <div>
+          <div >
             <form onSubmit={event => this.onCreateMessage(event, authUser)}>
-
+              <input
+                type="text"
+                value={taskName}
+                onChange={this.onChangeTaskName}
+              />
               <label>
                 Pick your project:
               <select value={text} onChange={this.onChangeText}>
@@ -91,14 +115,13 @@ class MessagesBase extends Component {
                 </select>
               </label>
               <Timer callbackFromParent={this.timerCallback} />
-              <input type="submit" value="Submit" />
+              <button className="submit-btn" type="submit" value="Submit"> Submit</button>
             </form>
-            <hr/>
+            <hr />
             {loading && <div>Loading ...</div>}
 
-            {messages ? (
-              <MessageList  authUser= {authUser.uid} messages={messages} onRemoveMessage={this.onRemoveMessage} />
-
+            {messages && this.bool(messages, authUser) ? (
+              <MessageList authUser={authUser.uid} messages={messages} onRemoveMessage={this.onRemoveMessage} />
             ) : (
                 <div><h2>The list is Empty ...</h2></div>
               )}
@@ -110,6 +133,7 @@ class MessagesBase extends Component {
 }
 
 const MessageList = ({ messages, onRemoveMessage }) => (
+
   <ul>
     {messages.map(message => (
       <MessageItem
@@ -123,16 +147,17 @@ const MessageList = ({ messages, onRemoveMessage }) => (
 
 const MessageItem = ({ message, onRemoveMessage }) => (
   <ul>
-  <li>
-    <strong>{message.userId}</strong>
-    <strong> {message.text}</strong>
-    <strong>{ms(message.time)}</strong>
-    <button
-      type="button"
-      onClick={() => onRemoveMessage(message.uid)}>
-      Delete
+    <li>
+      <strong>{message.userId}</strong>
+      <strong> {message.text}</strong>
+      <strong>{message.taskName}</strong>
+      <strong>{(message.time)}</strong>
+      <button
+        type="button"
+        onClick={() => onRemoveMessage(message.uid)}>
+        Delete
     </button>
-  </li>
+    </li>
   </ul>
 );
 

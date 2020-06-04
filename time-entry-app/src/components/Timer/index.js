@@ -15,6 +15,7 @@ class Timer extends React.Component {
     this.resetTimer = this.resetTimer.bind(this)
   }
 
+
   startTimer= event => {
     this.setState({
       isOn: true,

@@ -9,8 +9,11 @@ import PasswordForgetPage from '../PasswordForget';
 import HomePage from '../Home';
 import AccountPage from '../Account';
 
+
 import * as ROUTES from '../../constants/routes';
 import { withAuthentication } from '../Session';
+
+import './index.scss'
 
 const App = () => (
   <Router>
