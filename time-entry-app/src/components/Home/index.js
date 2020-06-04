@@ -76,16 +76,6 @@ class MessagesBase extends Component {
     this.props.firebase.messages().off();
   }
 
-  bool = (messages, authUser) => {
-    var flag = false;
-    messages.map(message => {
-      if (message.userId === authUser.email) {
-        flag = true;
-      }
-    })
-    return flag
-  };
-
   render() {
     const { text, taskName, messages, loading } = this.state;
 
@@ -99,6 +89,7 @@ class MessagesBase extends Component {
                 type="text" placeholder="taskName"
                 value={taskName}
                 onChange={this.onChangeTaskName}
+                required
               />
               <label>
                 Pick your project:
