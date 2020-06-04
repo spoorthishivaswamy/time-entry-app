@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { compose } from 'recompose';
-import ReactDOM from 'react-dom'
 import { AuthUserContext, withAuthorization } from '../Session';
 import { withFirebase } from '../Firebase';
 import Timer from '../Timer';
@@ -9,8 +8,7 @@ import ms from 'pretty-ms'
 
 const HomePage = () => (
   <div>
-    <h1 style={{ color: "red" }}>Time Entry App</h1>
-
+    <h1 >Time Entry App</h1>
     <Messages />
   </div>
 );
@@ -81,11 +79,8 @@ class MessagesBase extends Component {
   bool = (messages, authUser) => {
     var flag = false;
     messages.map(message => {
-      // console.log("message.userId ", message.userId )
-      // console.log("authUser.email", authUser.email)
-      if (message.userId === authUser.email){
-        console.log("authUser.email", authUser.email)
-        flag=true;
+      if (message.userId === authUser.email) {
+        flag = true;
       }
     })
     return flag
@@ -99,9 +94,9 @@ class MessagesBase extends Component {
       <AuthUserContext.Consumer>
         {authUser => (
           <div >
-            <form onSubmit={event => this.onCreateMessage(event, authUser)}>
+            <form className = "form-home" onSubmit={event => this.onCreateMessage(event, authUser)}>
               <input
-                type="text"
+                type="text" placeholder="taskName"
                 value={taskName}
                 onChange={this.onChangeTaskName}
               />
@@ -147,17 +142,19 @@ const MessageList = ({ messages, onRemoveMessage }) => (
 
 const MessageItem = ({ message, onRemoveMessage }) => (
   <ul>
-    <li>
-      <strong>{message.userId}</strong>
-      <strong> {message.text}</strong>
-      <strong>{message.taskName}</strong>
-      <strong>{(message.time)}</strong>
-      <button
+      <table>
+      <tr>
+      <td><strong>{message.userId}</strong></td>
+      <td><strong> {message.text}</strong></td>
+      <td><strong>{message.taskName}</strong></td>
+      <td><strong>{ms(message.time)}</strong></td>
+      <td><button
         type="button"
         onClick={() => onRemoveMessage(message.uid)}>
         Delete
-    </button>
-    </li>
+    </button></td>
+    </tr>
+    </table>
   </ul>
 );
 

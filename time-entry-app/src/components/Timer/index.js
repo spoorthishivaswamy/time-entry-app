@@ -1,5 +1,5 @@
 import React from 'react';
-const ms = require('pretty-ms')
+import ms from 'pretty-ms'
 
 class Timer extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class Timer extends React.Component {
   }
   render() {
     let start = (this.state.time === 0) ?
-      <button onClick={this.startTimer}>start</button> :
+      <button className="start-btn" onClick={this.startTimer}>start</button> :
       null
     let stop = (this.state.time === 0 || !this.state.isOn) ?
       null :
